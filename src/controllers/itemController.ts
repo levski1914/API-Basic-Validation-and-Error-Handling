@@ -18,8 +18,16 @@ export const getItemById: RequestHandler = (req, res) => {
 
 export const createItem: RequestHandler = (req, res) => {
   const { name } = req.body;
+
   if (!name || typeof name !== "string") {
     res.status(400).json({ error: "Name is required and must be a string" });
+    return ;
+}
+
+ 
+  const exists = items.find(i => i.name.toLowerCase() === name.toLowerCase());
+  if (exists) {
+    res.status(409).json({ error: "Item with this name already exists" });
     return;
   }
 
@@ -31,6 +39,7 @@ export const createItem: RequestHandler = (req, res) => {
   items.push(newItem);
   res.status(201).json(newItem);
 };
+
 
 export const updateItem: RequestHandler = (req, res) => {
   const id = Number(req.params.id);
